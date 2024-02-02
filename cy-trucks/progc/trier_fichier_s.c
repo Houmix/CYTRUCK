@@ -6,9 +6,9 @@
 
 typedef struct AVL {
     int id;
-    float dist_min;
-    float dist_max;
-    float dist_moy;
+    float min;
+    float max;
+    float moy;
     float diff;
     struct AVL *fg;
     struct AVL *fd;
@@ -100,9 +100,9 @@ pArbre creerNoeud(int id, float diff, float max, float min, float moy) {
     Arbre *new = malloc(sizeof(*new));
     if (new != NULL) {
         new->id = id;
-        new->dist_max = max;
-        new->dist_min = min;
-        new->dist_moy = moy;
+        new->max = max;
+        new->min = min;
+        new->moy = moy;
         new->diff = diff;
         new->h = 0; 
         new->fg = NULL;
@@ -191,7 +191,7 @@ void parcoursDecroissant(pArbre a, FILE *fichierSortie, int *i, const int lim) {
     if (*i <= lim) {
         parcoursDecroissant(a->fd, fichierSortie, i, lim);
         if (*i <= lim) {
-            fprintf(fichierSortie, "%d;%d;%f;%f;%f;%f\n", *i, a->id, a->dist_min, a->dist_moy, a->dist_max, a->diff);
+            fprintf(fichierSortie, "%d;%d;%f;%f;%f;%f\n", *i, a->id, a->min, a->moy, a->max, a->diff);
             (*i)++;
         }
         parcoursDecroissant(a->fg, fichierSortie, i, lim);
