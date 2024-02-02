@@ -35,3 +35,5 @@ Génération des graphiques qui sont stockés dans le dossier 'images' après l'
 
 
 Génération de fichier texte contenant les resultats ecrits dans le dossier demo
+
+chat gpt a été utilisé pour la realisation du projet et sa presence est plus accentuée pour les traitements t et s
