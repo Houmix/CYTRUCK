@@ -127,9 +127,6 @@ elif [ "$option" == "-t" ]; then
         route_id = $1;
         townA = $3;
         townB = $4;
-
-        # Check if Route_ID/townA or Route_ID/townB are not already present in the visited_cities table, 
-        # otherwise a new box of the table with these values is created and initialized to 1
     if (!(route_id SUBSEP townA in visited_cities) || !(route_id SUBSEP townB in visited_cities)) {
         if (!(route_id SUBSEP townA in visited_cities)) {
             visited_cities[route_id SUBSEP townA] = 1;
@@ -140,15 +137,10 @@ elif [ "$option" == "-t" ]; then
             count[townB] += 1;
         }
     }
-
-        # If the journey step is 1, then the value assigned to townA is incremented in the departure_city table
-
     if ($2 == 1) { 
         departure_city[$3] += 1;
         }
     }
-    
-    # Displays the results in a temporary file
     END { 
         for (city in count) {
             print city, count[city] ";" (city in departure_city ? departure_city[city] : 0);

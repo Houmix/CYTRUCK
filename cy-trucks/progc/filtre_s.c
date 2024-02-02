@@ -30,7 +30,7 @@ int main() {
 
     // Variables pour gérer dynamiquement la mémoire
     int max_id = -1;
-    struct Stat *stats = NULL;
+    struct Stat *s = NULL;
 
     char line[BUFFER_SIZE];
     while (fgets(line, sizeof(line), input)) {
@@ -38,7 +38,7 @@ int main() {
         float value;
         if (sscanf(line, "%d;%f", &id, &value) != 2) {
             fprintf(stderr, "Erreur lors de la lecture de la ligne : %s", line);
-            continue; // Ignorer la ligne incorrecte et passer à la suivante
+            continue; 
         }
 
         // Vérifier si l'identifiant est dans la plage attendue
@@ -49,39 +49,38 @@ int main() {
             }
 
             // Réallouer dynamiquement la mémoire si nécessaire
-            stats = realloc(stats, (max_id + 1) * sizeof(struct Stat));
+            s = realloc(s, (max_id + 1) * sizeof(struct Stat));
 
-            // Initialiser à zéro si l'élément est nouvellement alloué
-            if (stats[id].count == 0) {
-                stats[id].id = id;
-                stats[id].min = value;
-                stats[id].max = value;
-                stats[id].somme = value;
-                stats[id].count = 1;
+            // Initialiser à zéro si l'élément est realloué
+            if (s[id].count == 0) {
+                s[id].id = id;
+                s[id].min = value;
+                s[id].max = value;
+                s[id].somme = value;
+                s[id].count = 1;
             } else {
-                // Mettre à jour les Stats
-                if (value < stats[id].min) {
-                    stats[id].min = value;
+                // Mettre à jour les s
+                if (value < s[id].min) {
+                    s[id].min = value;
                 }
-                if (value > stats[id].max) {
-                    stats[id].max = value;
+                if (value > s[id].max) {
+                    s[id].max = value;
                 }
-                stats[id].somme += value;
-                stats[id].count++;
+                s[id].somme += value;
+                s[id].count++;
             }
         }
     }
 
     for (int i = 0; i <= max_id; i++) {
-        if (stats[i].count > 0) {
-            stats[i].moyenne = (float)stats[i].somme / stats[i].count;
-            stats[i].difference = (float)stats[i].max - (float)stats[i].min;
-            fprintf(output, "%d;%.3f;%.2f;%.3f;%.3f\n", stats[i].id, stats[i].min, stats[i].moyenne, stats[i].max, stats[i].difference);
+        if (s[i].count > 0) {
+            s[i].moyenne = (float)s[i].somme / s[i].count;
+            s[i].difference = (float)s[i].max - (float)s[i].min;
+            fprintf(output, "%d;%.3f;%.2f;%.3f;%.3f\n", s[i].id, s[i].min, s[i].moyenne, s[i].max, s[i].difference);
         }
     }
 
-    // Libérer la mémoire allouée dynamiquement
-    free(stats);
+    free(s);
 
 
 
