@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BUFFER_SIZE 4096  // Augmenté la taille du tampon
+#define BUFFER_SIZE 4096  
 
-struct Statistique {
+struct Stat {
     int id;
     float min;
     float max;
@@ -30,7 +30,7 @@ int main() {
 
     // Variables pour gérer dynamiquement la mémoire
     int max_id = -1;
-    struct Statistique *stats = NULL;
+    struct Stat *stats = NULL;
 
     char line[BUFFER_SIZE];
     while (fgets(line, sizeof(line), input)) {
@@ -49,7 +49,7 @@ int main() {
             }
 
             // Réallouer dynamiquement la mémoire si nécessaire
-            stats = realloc(stats, (max_id + 1) * sizeof(struct Statistique));
+            stats = realloc(stats, (max_id + 1) * sizeof(struct Stat));
 
             // Initialiser à zéro si l'élément est nouvellement alloué
             if (stats[id].count == 0) {
@@ -59,7 +59,7 @@ int main() {
                 stats[id].somme = value;
                 stats[id].count = 1;
             } else {
-                // Mettre à jour les statistiques
+                // Mettre à jour les Stats
                 if (value < stats[id].min) {
                     stats[id].min = value;
                 }

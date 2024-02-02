@@ -6,31 +6,40 @@
 
 typedef struct AVL {
     int id;
-    float dist_min;
-    float dist_max;
-    float dist_moy;
+    float min;
+    float max;
+    float moy;
     float diff;
-    struct AVL *fg;
-    struct AVL *fd;
+    struct AVL *pLeft;
+    struct AVL *pRight;
     int h;
 } Arbre, *pArbre;
 
+
 int max(int a, int b) {
-    return (a > b) ? a : b;
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
 }
 
 int min(int a, int b) {
-    return (a < b) ? a : b;
+    if (a < b) {
+        return a;
+    } else {
+        return b;
+    }
 }
 
 pArbre rotationGauche(pArbre a) {
-    if (a == NULL || a->fd == NULL) {
+    if (a == NULL || a->pRight == NULL) {
         return a;
     }
 
-    pArbre pivot = a->fd;
-    a->fd = pivot->fg;
-    pivot->fg = a;
+    pArbre pivot = a->pRight;
+    a->pRight = pivot->pLeft;
+    pivot->pLeft = a;
     int eq_a = a->h;
     int eq_p = pivot->h;
     a->h = eq_a - max(eq_p, 0) - 1;
@@ -40,13 +49,13 @@ pArbre rotationGauche(pArbre a) {
 }
 
 pArbre rotationDroite(pArbre a) {
-    if (a == NULL || a->fg == NULL) {
+    if (a == NULL || a->pLeft == NULL) {
         return a;
     }
 
-    pArbre pivot = a->fg;
-    a->fg = pivot->fd;
-    pivot->fd = a;
+    pArbre pivot = a->pLeft;
+    a->pLeft = pivot->pRight;
+    pivot->pRight = a;
     int eq_a = a->h;
     int eq_p = pivot->h;
     a->h = eq_a - min(eq_p, 0) + 1;
@@ -60,7 +69,7 @@ pArbre doubleRotationGauche(pArbre a) {
         return a;
     }
 
-    a->fd = rotationDroite(a->fd);
+    a->pRight = rotationDroite(a->pRight);
     a = rotationGauche(a);
     return a;
 }
@@ -70,7 +79,7 @@ pArbre doubleRotationDroite(pArbre a) {
         return a;
     }
 
-    a->fg = rotationGauche(a->fg);
+    a->pLeft = rotationGauche(a->pLeft);
     a = rotationDroite(a);
     return a;
 }
@@ -81,13 +90,13 @@ pArbre equilibrerAVL(pArbre a) {
     }
 
     if (a->h >= 2) {
-        if (a->fd != NULL && a->fd->h >= 0) {
+        if (a->pRight != NULL && a->pRight->h >= 0) {
             return rotationGauche(a);
         } else {
             return doubleRotationGauche(a);
         }
     } else if (a->h <= -2) {
-        if (a->fg != NULL && a->fg->h <= 0) {
+        if (a->pLeft != NULL && a->pLeft->h <= 0) {
             return rotationDroite(a);
         } else {
             return doubleRotationDroite(a);
@@ -100,15 +109,15 @@ pArbre creerNoeud(int id, float diff, float max, float min, float moy) {
     Arbre *new = malloc(sizeof(*new));
     if (new != NULL) {
         new->id = id;
-        new->dist_max = max;
-        new->dist_min = min;
-        new->dist_moy = moy;
+        new->max = max;
+        new->min = min;
+        new->moy = moy;
         new->diff = diff;
         new->h = 0; 
-        new->fg = NULL;
-        new->fd = NULL;
+        new->pLeft = NULL;
+        new->pRight = NULL;
     } else {
-        fprintf(stderr, "Erreur d'allocation dynamique pour le nouveau nœud.\n");
+        fprintf(stderr, "Erreur d'allocation dynamique.\n");
     }
     return new;
 }
@@ -118,10 +127,10 @@ pArbre insertionAVL(pArbre x, int id, float diff, float max, float min, float mo
         *h = 1;
         return creerNoeud(id, diff, max, min, moy);
     } else if (diff < x->diff) {
-        x->fg = insertionAVL(x->fg, id, diff, max, min, moy, h);
+        x->pLeft = insertionAVL(x->pLeft, id, diff, max, min, moy, h);
         *h = -*h;
     } else if (diff > x->diff) {
-        x->fd = insertionAVL(x->fd, id, diff, max, min, moy, h);
+        x->pRight = insertionAVL(x->pRight, id, diff, max, min, moy, h);
     } else if (diff == 0) {
         return x;
     }
@@ -142,7 +151,7 @@ pArbre insertionAVL(pArbre x, int id, float diff, float max, float min, float mo
 
 void extrairecol5(pArbre *a, FILE *fichier) {
     if (a == NULL || fichier == NULL) {
-        fprintf(stderr, "Erreur : Pointeur NULL passé à la fonction extrairecol5.\n");
+        fprintf(stderr, "Erreur, tous est à NULL\n");
         return;
     }
 
@@ -152,7 +161,7 @@ void extrairecol5(pArbre *a, FILE *fichier) {
     float mini, moy, maxi;
     int i = 0;
 
-    while (fgets(ligne, sizeof(ligne), fichier) != NULL) {
+    while (pLeftets(ligne, sizeof(ligne), fichier) != NULL) {
         char *token = strtok(ligne, "\n");
         int colonne = 1;
 
@@ -189,19 +198,19 @@ void parcoursDecroissant(pArbre a, FILE *fichierSortie, int *i, const int lim) {
     }
 
     if (*i <= lim) {
-        parcoursDecroissant(a->fd, fichierSortie, i, lim);
+        parcoursDecroissant(a->pRight, fichierSortie, i, lim);
         if (*i <= lim) {
-            fprintf(fichierSortie, "%d;%d;%f;%f;%f;%f\n", *i, a->id, a->dist_min, a->dist_moy, a->dist_max, a->diff);
+            fprintf(fichierSortie, "%d;%d;%f;%f;%f;%f\n", *i, a->id, a->min, a->moy, a->max, a->diff);
             (*i)++;
         }
-        parcoursDecroissant(a->fg, fichierSortie, i, lim);
+        parcoursDecroissant(a->pLeft, fichierSortie, i, lim);
     }
 }
 
 void libererAVL(pArbre a) {
     if (a != NULL) {
-        libererAVL(a->fg);
-        libererAVL(a->fd);
+        libererAVL(a->pLeft);
+        libererAVL(a->pRight);
         free(a);
     }
 }

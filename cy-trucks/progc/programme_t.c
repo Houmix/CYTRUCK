@@ -12,10 +12,10 @@ typedef struct AVL{
     struct AVL* pRight;
 }AVL_Tree;
 
-typedef AVL_Tree* spTree;
+typedef AVL_Tree* pTree;
 
-spTree createNodeAVL(const char* city, int crossed, int d_city){
-    spTree new = malloc(sizeof(AVL_Tree));
+pTree createNodeAVL(const char* city, int crossed, int d_city){
+    pTree new = malloc(sizeof(AVL_Tree));
     if (new == NULL) {
         printf("Malloc à échoué\n");
         exit(1);
@@ -74,12 +74,12 @@ int min3(int a, int b, int c) {
 }
 
 
-spTree leftRotation(spTree avl){
+pTree leftRotation(pTree avl){
     if(avl == NULL){
         printf("L'arbe AVL vaut NULL donc vide\n");
         exit(2);
     }
-    spTree pivot;
+    pTree pivot;
     int eq_a, eq_p;
 
     pivot = avl->pRight;
@@ -94,12 +94,12 @@ spTree leftRotation(spTree avl){
     avl = pivot;
     return avl;
 }
-spTree rightRotation(spTree avl){
+pTree rightRotation(pTree avl){
     if(avl == NULL){
         printf("L'arbe AVL vaut NULL donc vide\n");
         exit(3);
     }
-    spTree pivot;
+    pTree pivot;
     int eq_a, eq_p;
 
     pivot = avl->pLeft;
@@ -115,7 +115,7 @@ spTree rightRotation(spTree avl){
     return avl;
 }
 
-spTree doubleLeftRotation(spTree avl){
+pTree doubleLeftRotation(pTree avl){
     if(avl == NULL){
         printf("L'arbe AVL vaut NULL donc vide\n");
         exit(4);
@@ -124,7 +124,7 @@ spTree doubleLeftRotation(spTree avl){
     return leftRotation(avl);
 }
 
-spTree doubleRightRotation(spTree avl){
+pTree doubleRightRotation(pTree avl){
         if(avl == NULL){
         printf("L'arbe AVL vaut NULL donc vide\n");
         exit(5);
@@ -133,7 +133,7 @@ spTree doubleRightRotation(spTree avl){
     return rightRotation(avl);
 }
 
-spTree equilibrageAVL(spTree avl){
+pTree equilibrageAVL(pTree avl){
         if(avl == NULL){
         printf("L'arbe AVL vaut NULL donc vide\n");
         exit(6);
@@ -157,8 +157,8 @@ spTree equilibrageAVL(spTree avl){
     return avl;
 }
 
-spTree insertAVL(spTree avl, int* h, const char* city, int crossed, int d_city){
-    spTree new = createNodeAVL(city, crossed, d_city);
+pTree insertAVL(pTree avl, int* h, const char* city, int crossed, int d_city){
+    pTree new = createNodeAVL(city, crossed, d_city);
     if(new == NULL){
         printf("Malloc à échoué\n");
         exit(7);
@@ -192,7 +192,7 @@ spTree insertAVL(spTree avl, int* h, const char* city, int crossed, int d_city){
 }
 
 
-spTree fillAVL(const char* data, spTree avl) {
+pTree fillAVL(const char* data, pTree avl) {
     FILE* file = fopen(data, "r");
     if (file == NULL) {
         perror("Error opening the file... \n");
@@ -212,7 +212,7 @@ spTree fillAVL(const char* data, spTree avl) {
     return avl;
 }
 
-void infixreverse(spTree avl, FILE* file) {
+void infixreverse(pTree avl, FILE* file) {
     if (avl != NULL) {
         infixreverse(avl->pRight, file);
         fprintf(file, "%s;%d;%d", avl->city, avl->crossed, avl->d_city);
@@ -221,7 +221,7 @@ void infixreverse(spTree avl, FILE* file) {
 }
 
 
-void freeAVL(spTree avl){
+void freeAVL(pTree avl){
     if (avl != NULL) {
         
     freeAVL(avl->pLeft);
@@ -238,7 +238,7 @@ int main(int argc, char *argv[]){
         exit (8);
     }
 
-    spTree avl = NULL;
+    pTree avl = NULL;
     avl = fillAVL(argv[1], avl);
 
     FILE *file = fopen("temp/firsttemp.csv", "w");

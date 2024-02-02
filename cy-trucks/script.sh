@@ -16,7 +16,8 @@ if [ ! -f "$fichier_csv" ]; then
     echo "Erreur : Le fichier $fichier_csv n'existe pas."
     exit 2
 fi
-
+#chmod +x Makefile
+#make
 
 # Vérification de l'existence des dossiers temp et images
 mkdir -p temp
