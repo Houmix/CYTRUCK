@@ -14,8 +14,9 @@ demo: Dossier contenant les résultats d'exécutions précédentes.
 
 
 Utilisation du Script Shell
-./analyse_transport.sh chemin/vers/fichier.csv [options]
+./script.sh chemin/vers/fichier.csv [options]
 
+ATTENTION : il est necessaire d'entrer la commande chmod +x script.sh
 
 Options Disponibles:
 -h: Affiche l'aide expliquant les options.
